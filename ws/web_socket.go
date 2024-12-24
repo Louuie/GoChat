@@ -15,12 +15,14 @@ var upgrader = websocket.Upgrader{
 
 type Server struct {
 	clients       map[*websocket.Conn]bool
+	UUID          map[string]string
 	handleMessage func(message []byte)
 }
 
 func StartServer(handleMessage func(message []byte)) *Server {
 	server := Server{
 		make(map[*websocket.Conn]bool),
+		make(map[string]string),
 		handleMessage,
 	}
 	http.HandleFunc("/ws", server.echo)
@@ -29,18 +31,30 @@ func StartServer(handleMessage func(message []byte)) *Server {
 }
 
 func (server *Server) echo(w http.ResponseWriter, r *http.Request) {
-	conn, _ := upgrader.Upgrade(w, r, nil)
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	params := r.URL.Query()
+	var chatUUID = params.Get("uuid")
+	if chatUUID == "" {
+		go server.WriteMessage([]byte("UUID is empty, closing connection"))
+		conn.Close()
+	}
+	server.UUID[chatUUID] = "1"
 	server.clients[conn] = true
 	for {
 		mt, msg, err := conn.ReadMessage()
 		if err != nil || mt == websocket.CloseMessage {
 			log.Fatalln(err)
+			break
 		}
 		go server.handleMessage(msg)
 		go server.WriteMessage(msg)
 	}
-	delete(server.clients, conn)
 	conn.Close()
+	delete(server.clients, conn)
+	delete(server.UUID, chatUUID)
 }
 
 func (server *Server) WriteMessage(message []byte) {
