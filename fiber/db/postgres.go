@@ -35,7 +35,7 @@ func CreateTable(db *sql.DB) error {
 	return nil
 }
 func CreateRoom(db *sql.DB, UUID string) (string, int, error) {
-	var room_nuber = 1
+	var room_nuber = 2
 	_, err := db.Exec("INSERT into rooms VALUES ($1, $2)", UUID, room_nuber)
 	if err, ok := err.(*pq.Error); ok {
 		// 23505: unique_violation
