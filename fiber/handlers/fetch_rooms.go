@@ -19,7 +19,18 @@ func FetchAllRooms(c *fiber.Ctx) error {
 			"error": databaseGetAllRoomErr.Error(),
 		})
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"rooms": rooms,
-	})
+	html := `<table border="1">
+		<tr>
+			<th>Room UUID</th>
+			<th>Room Number</th>
+		</tr>`
+	for _, room := range *rooms {
+		html += `<tr>
+			<td>` + room.UUID + `</td>
+			<td><button class="room-btn" data-uuid="` + room.UUID + `">` + room.Room_Number + `</button></td>
+		</tr>`
+	}
+	html += `</table>`
+
+	return c.Type(".html").SendString(html)
 }
