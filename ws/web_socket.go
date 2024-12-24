@@ -35,7 +35,12 @@ func (server *Server) echo(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	var chatUUID = "42fsqg-kl42fe"
+	params := r.URL.Query()
+	var chatUUID = params.Get("uuid")
+	if chatUUID == "" {
+		go server.WriteMessage([]byte("UUID is empty, closing connection"))
+		conn.Close()
+	}
 	server.UUID[chatUUID] = "1"
 	server.clients[conn] = true
 	for {

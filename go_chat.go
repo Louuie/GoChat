@@ -2,20 +2,20 @@ package main
 
 import (
 	"fmt"
-	"gochat/fiber"
 	"gochat/page"
 	"gochat/ws"
 )
 
 func main() {
+
 	// Start WebSocket server
 	ws.StartServer(messageHandler)
 
-	// Start fiber server
-	fiber.StartServer()
-
 	// Start the static HTML Page
 	page.StartPage()
+
+	// Start fiber server
+	//fiber.StartServer()
 
 	// Block main thread to keep server running
 	select {}
