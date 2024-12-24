@@ -88,6 +88,6 @@ func main() {
 	http.ListenAndServe(":3030", nil)
 }
 
-func Start() {
+func StartPage() {
 	main()
 }
