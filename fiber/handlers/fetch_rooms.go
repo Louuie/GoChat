@@ -26,11 +26,10 @@ func FetchAllRooms(c *fiber.Ctx) error {
 		</tr>`
 	for _, room := range *rooms {
 		html += `<tr>
-			<td>` + room.UUID + `</td>
-			<td><button class="room-btn" data-uuid="` + room.UUID + `">` + room.Room_Number + `</button></td>
-		</tr>`
+				<td>` + room.UUID + `</td>
+				<td><button class="room-btn" data-uuid="` + room.UUID + `" data-room-number="` + room.Room_Number + `">` + room.Room_Number + `</button></td>
+			</tr>`
 	}
 	html += `</table>`
-
-	return c.Type(".html").SendString(html)
+	return c.Type("html").SendString(html)
 }
