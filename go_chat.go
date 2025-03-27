@@ -16,6 +16,7 @@ func main() {
 
 	// Start fiber server
 	//fiber.StartServer()
+	// Comment here
 
 	// Block main thread to keep server running
 	select {}
